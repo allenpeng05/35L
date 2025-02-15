@@ -24,7 +24,7 @@ const Login = () => {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
       <div className="bg-white p-8 shadow-lg rounded-lg w-96">
-        <h2 className="text-2xl font-semibold text-center mb-4">Login</h2>
+        <h2 className="text-black text-2xl font-semibold text-center mb-4">Login</h2>
 
         {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
 
@@ -36,7 +36,7 @@ const Login = () => {
             </label>
             <input
               type="email"
-              className="w-full p-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
+              className="text-black w-full p-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
@@ -50,7 +50,7 @@ const Login = () => {
             </label>
             <input
               type="password"
-              className="w-full p-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
+              className="text-black w-full p-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
