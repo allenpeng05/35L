@@ -6,6 +6,8 @@ import ClassCard from "@/components/ClassCard";
 import ClassList from "@/components/ClassList";
 import SearchBar from "@/components/SearchBar";
 import FriendsList from "@/components/FriendsList";
+import Navbar from "@/components/Navbar.jsx";
+import Footer from "@/components/Footer.jsx";
 import { Search } from "lucide-react";
 
 export default function Home() {
@@ -87,16 +89,18 @@ export default function Home() {
     .filter((friend) => friend.classes.length > 0);
 
   return (
-    <div className="flex h-screen w-full">
-      <ClassList classes={classes} />
-
-      {/* search bar is inlcuded internally in the FriendsList component */}
-      <FriendsList
-        friendsClasses={friendsClasses}
-        filteredFriends={filteredFriends}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-      />
+    <div className="flex flex-col h-screen max-h-screen">
+      <Navbar />
+      <div className="flex-1 flex w-full overflow-auto">
+        <ClassList classes={classes} />
+        <FriendsList
+            friendsClasses={friendsClasses}
+            filteredFriends={filteredFriends}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+        />
+      </div>
+      <Footer />
     </div>
   );
 }
