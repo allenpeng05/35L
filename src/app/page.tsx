@@ -3,9 +3,13 @@
 import Link from "next/link";
 import { useState } from "react";
 import ClassCard from "@/components/ClassCard";
+import ClassList from "@/components/ClassList";
+import SearchBar from "@/components/SearchBar";
+import FriendsList from "@/components/FriendsList";
 import { Search } from "lucide-react";
 
 export default function Home() {
+  /* placeholder array, needs hooking */
   const [classes, setClasses] = useState([
     {
       classId: "CS143",
@@ -24,6 +28,7 @@ export default function Home() {
     },
   ]);
 
+  /* placeholder array, needs hooking */
   const [friendsClasses, setFriendsClasses] = useState([
     {
       friendName: "Alex",
@@ -67,64 +72,31 @@ export default function Home() {
     },
   ]);
 
+  const [searchQuery, setSearchQuery] = useState("");
+
+  /* for search bar, case insensitive right now */
+  const filteredFriends = friendsClasses
+    .map((friend) => ({
+      ...friend,
+      classes: friend.classes.filter(
+        (course) =>
+          friend.friendName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          course.className.toLowerCase().includes(searchQuery.toLowerCase())
+      ),
+    }))
+    .filter((friend) => friend.classes.length > 0);
+
   return (
-    <div className="flex h-screen">
-      {/* Planned Classes Container */}
-      <div className="w-1/2 bg-gray-200 p-4">
-        <h1 className="text-3xl text-center font-bold">Your Planned Classes</h1>
-        {/* List Container */}
-        <div className="mt-4 p-3 bg-gray-100 shadow-md rounded-lg">
-          <ul className="list-none space-y-2">
-            {classes.map((course, index) => (
-              <ClassCard
-                key={index}
-                classId={course.classId}
-                className={course.className}
-                professor={course.professor}
-              />
-            ))}
-          </ul>
-          {/* Button to Add/Remove a class*/}
-          <button className="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
-            Add / Remove Class
-          </button>
-        </div>
-      </div>
+    <div className="flex h-screen w-full">
+      <ClassList classes={classes} />
 
-      {/* Friend's Side */}
-      <div className="w-1/2 h-full max-h-screen overflow-y-auto p-4 bg-gray-300">
-        <h1 className="text-3xl text-center font-bold">Friends</h1>
-        {/* Search Bar */}
-        <div className="relative mt-3 mb-4">
-          <input
-            type="text"
-            placeholder="Search"
-            className="w-full p-2 pr-10 border rounded-md focus:outline-none"
-          />
-          <Search className="absolute right-3 top-2 w-5 text-gray-500" />
-        </div>
-
-        {friendsClasses.map((friend, friendIndex) => (
-          <div
-            key={friendIndex}
-            className="mt-6 p-3 bg-gray-100 shadow-md rounded-lg w-full"
-          >
-            <h2 className="text-xl font-semibold text-center text-gray-700">
-              {friend.friendName}
-            </h2>
-            <ul className="list-none space-y-2">
-              {friend.classes.map((course, index) => (
-                <ClassCard
-                  key={index}
-                  classId={course.classId}
-                  className={course.className}
-                  professor={course.professor}
-                />
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
+      {/* search bar is inlcuded internally in the FriendsList component */}
+      <FriendsList
+        friendsClasses={friendsClasses}
+        filteredFriends={filteredFriends}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+      />
     </div>
   );
 }
