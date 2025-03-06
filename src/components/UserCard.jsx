@@ -13,6 +13,7 @@ export default function UserCard({ user }) {
 
       <h2 className="userName">{user.name}</h2>
       <p className="major">{user.major}</p>
+      <p className="grade">{user.grade}</p>
 
       <p className="bio">{user.bio || "No bio available."}</p>
 
