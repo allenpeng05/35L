@@ -37,13 +37,11 @@ const Register = () => {
         body: JSON.stringify({
           email,
           password: password1,
-          // If your backend requires these fields, add them here:
-          username: email.split("@")[0], // example: use email prefix as username
+          name: email.split("@")[0], // Optional default username based on email prefix
           major: "",
-          bio: "",
-          contactInfo: ""
+          bio: ""
         }),
-      });
+      });      
 
       if (!response.ok) {
         const data = await response.json();
@@ -54,7 +52,7 @@ const Register = () => {
       console.log("Registration success:", data);
       setError("");
 
-      window.location.href = "/login";
+      window.location.href = "/";
     } catch (err: any) {
       setError(err.message);
     }
