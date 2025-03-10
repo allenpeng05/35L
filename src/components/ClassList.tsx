@@ -14,8 +14,8 @@ interface ClassListProps {
 export default function ClassList({ classes }: ClassListProps) {
   return (
     <div className="w-1/2 bg-gray-200 p-4">
-      <h1 className="text-3xl text-center font-bold">Your Planned Classes</h1>
-      <div className="mt-4 p-3 bg-gray-100 shadow-md rounded-lg">
+      <h1 className="text-3xl text-center font-bold text-black font-roboto">Your Classes</h1>
+      <div className="mt-4 p-3 bg-gray-100 shadow-md rounded-lg text-black">
         <ul className="list-none space-y-2">
           {classes.map((course, index) => (
             <ClassCard
