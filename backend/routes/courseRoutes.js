@@ -1,8 +1,9 @@
-// 📂 routes/courseRoutes.js
 const express = require("express");
-const { createCourse } = require("../controllers/courseController");
+const { addCourse, removeCourse } = require("../controllers/courseController");
 
 const router = express.Router();
-router.post("/courses", createCourse);
+
+router.post("/courses", addCourse);
+router.delete("/courses/:courseId", removeCourse);
 
 module.exports = router;

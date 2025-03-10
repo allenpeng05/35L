@@ -13,7 +13,11 @@ const SECRET_KEY = process.env.JWT_SECRET || "dev_secret";
 
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password, major, bio } = req.body;
+    const { email, password, name = "", major = "", bio = "" } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ error: "Email and password are required." });
+    }
 
     const emailError = validateEmail(email);
     if (emailError) return res.status(400).json({ error: emailError });
@@ -21,26 +25,30 @@ const registerUser = async (req, res) => {
     const passwordError = validatePassword(password);
     if (passwordError) return res.status(400).json({ error: passwordError });
 
-    if (await User.findOne({ email }))
+    if (await User.findOne({ email })) {
       return res.status(409).json({ error: "Email already registered." });
+    }
 
     const hashedPassword = await hashPassword(password);
 
     const newUser = new User({
-      name,
       email,
       password: hashedPassword,
-      major,
-      bio,
+      name,  // Will be empty string if not provided
+      major, // Will be empty string if not provided
+      bio,   // Will be empty string if not provided
     });
 
     await newUser.save();
 
     res.status(201).json({ message: "User registered", id: newUser._id });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Registration failed" });
   }
 };
+  
+
 
 const updateUser = async (req, res) => {
   try {
