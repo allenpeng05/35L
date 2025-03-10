@@ -27,8 +27,8 @@ export default function FriendsList({
   setSearchQuery,
 }: FriendsListProps) {
   return (
-    <div className="w-1/2 h-full max-h-screen overflow-y-auto p-4 bg-gray-300">
-      <h1 className="text-3xl text-center font-bold font-roboto text-black">Friends</h1>
+    <div className="w-1/2 h-full max-h-[95%] overflow-y-auto p-4 bg-gray-300 m-[1%] rounded-2xl">
+      <h1 className="text-3xl text-center font-bold font-roboto text-black m-2">Friend's Classes</h1>
       <div className="relative mt-3 mb-4">
         <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       </div>
@@ -39,7 +39,7 @@ export default function FriendsList({
             key={friendIndex}
             className="mt-6 p-3 bg-gray-100 shadow-md rounded-lg w-full"
           >
-            <h2 className="text-xl font-semibold text-center text-gray-700 text-bl font-roboto">
+            <h2 className="text-2xl font-semibold text-center text-gray-700 text-bl font-roboto">
               {friend.friendName}
             </h2>
             <ul className="list-none space-y-2">

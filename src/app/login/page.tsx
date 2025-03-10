@@ -27,7 +27,7 @@ const Login = () => {
   return (
     <div className="flex flex-col h-screen max-h-screen">
       <Navbar />
-      <div className="flex flex-1 items-center justify-center bg-gray-100">
+      <div className="flex flex-1 items-center justify-center bg-blue-300">
         <div className="bg-white p-8 shadow-lg rounded-lg w-96">
           <h2 className="text-black text-2xl font-semibold text-center mb-4">Login</h2>
 

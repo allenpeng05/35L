@@ -9,6 +9,7 @@ import FriendsList from "@/components/FriendsList";
 import Navbar from "@/components/Navbar.jsx";
 import Footer from "@/components/Footer.jsx";
 import { Search } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   /* placeholder array, needs hooking */
@@ -88,10 +89,15 @@ export default function Home() {
     }))
     .filter((friend) => friend.classes.length > 0);
 
+  const router = useRouter();
+  let loggedIn = true;
+  if (!loggedIn) {
+    router.push('/login');
+  }
   return (
     <div className="flex flex-col h-screen max-h-screen">
       <Navbar />
-      <div className="flex-1 flex w-full overflow-auto">
+      <div className="flex-1 flex w-full overflow-auto bg-blue-300">
         <ClassList classes={classes} />
         <FriendsList
             friendsClasses={friendsClasses}
