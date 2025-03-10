@@ -1,13 +1,13 @@
-const mongoose = require("mongoose");
+// 📂 utils/validation.js
+const { ObjectId } = require("mongodb");
 const bcrypt = require("bcrypt");
-const User = require("../models/userModel");
 
 const hashPassword = (password) => bcrypt.hash(password, 10);
 
-const insertDocument = async (Model, data) => {
+const insertDocument = async (db, collection, data) => {
   return Array.isArray(data)
-    ? (await Model.insertMany(data)).map(doc => doc._id)
-    : (await Model.create(data))._id;
+    ? (await db.collection(collection).insertMany(data)).insertedIds
+    : (await db.collection(collection).insertOne(data)).insertedId;
 };
 
 const getTimestamp = () => new Date().toLocaleString('en-US', {
@@ -55,14 +55,6 @@ const validateCourse = (courseCode, courseName, instructor, schedule) => {
   return null;
 };
 
-const validatePost = async (userId) => {
-  if (!mongoose.Types.ObjectId.isValid(userId)) return "❌ Invalid User ID.";
-
-  const userExists = await User.findById(userId);
-  if (!userExists) return "❌ User ID does not exist.";
-
-  return null;
-};
 
 module.exports = {
   hashPassword,
@@ -72,5 +64,4 @@ module.exports = {
   validatePassword,
   validateUsername,
   validateCourse,
-  validatePost
 };

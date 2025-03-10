@@ -4,13 +4,10 @@ const { registerUser, updateUser, loginUser } = require("../controllers/userCont
 
 const router = express.Router();
 
-// Registration endpoint
 router.post("/register", registerUser);
 
-// Login endpoint
 router.post("/login", loginUser);
 
-// Update user endpoint
 router.put("/users/:id", updateUser);
 
 module.exports = router;

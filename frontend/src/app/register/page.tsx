@@ -54,7 +54,6 @@ const Register = () => {
       console.log("Registration success:", data);
       setError("");
 
-      // Optionally, redirect to login page
       window.location.href = "/login";
     } catch (err: any) {
       setError(err.message);
@@ -107,7 +106,7 @@ const Register = () => {
           </button>
         </form>
         <p className="text-blue-500 cursor-pointer hover:text-blue-700">
-          Already have an account? <Link href="/login">Go to login</Link>
+          Already have an account? <Link href="/">Go to login</Link>
         </p>
       </div>
     </div>

@@ -37,7 +37,7 @@ const Login = () => {
       }
 
       // Redirect to home or a protected page
-      window.location.href = "/";
+      window.location.href = "/home";
     } catch (err: any) {
       setError(err.message);
     }
