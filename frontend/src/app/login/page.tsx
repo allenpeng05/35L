@@ -34,9 +34,10 @@ const Login = () => {
       console.log("Login success:", data);
       setError("");
 
-      // If using JWT, store the token (e.g., in localStorage)
+      // After a successful login
       if (data.token) {
-        localStorage.setItem("token", data.token);
+        // Set a cookie for the token (accessible on all routes)
+        document.cookie = `token=${data.token}; path=/;`;
       }
 
       // Redirect to home or a protected page

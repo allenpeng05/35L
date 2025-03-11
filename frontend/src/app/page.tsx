@@ -89,11 +89,6 @@ export default function Home() {
     }))
     .filter((friend) => friend.classes.length > 0);
 
-  const router = useRouter();
-  let loggedIn = true;
-  if (!loggedIn) {
-    router.push('/login');
-  }
   return (
     <div className="flex flex-col h-screen max-h-screen">
       <Navbar />
