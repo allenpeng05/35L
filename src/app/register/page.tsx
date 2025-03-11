@@ -6,6 +6,7 @@ import Footer from "@/components/Footer.jsx";
 
 const Register = () => {
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [password1, setPassword1] = useState("");
   const [password2, setPassword2] = useState("");
   const [error, setError] = useState("");
@@ -47,6 +48,21 @@ const Register = () => {
           {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
 
           <form onSubmit={handleSubmit} className="space-y-4">
+
+            {/* Name Field */}
+            <div>
+              <label className="block text-sm font-medium text-gray-600">
+                Email
+              </label>
+              <input
+                type="name"
+                className="text-black w-full p-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Enter your name"
+              />
+            </div>
+            
             {/* Email Field */}
             <div>
               <label className="block text-sm font-medium text-gray-600">

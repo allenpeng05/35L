@@ -49,6 +49,7 @@ export default function FriendsList({
                   classId={course.classId}
                   className={course.className}
                   professor={course.professor}
+                  removable={false}
                 />
               ))}
             </ul>
