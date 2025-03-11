@@ -92,7 +92,7 @@ export default function Home() {
   const router = useRouter();
   let loggedIn = true;
   if (!loggedIn) {
-    router.push('/login');
+    router.push("/login");
   }
   return (
     <div className="flex flex-col h-screen max-h-screen">
@@ -100,10 +100,10 @@ export default function Home() {
       <div className="flex-1 flex w-full overflow-auto bg-blue-300">
         <ClassList classes={classes} />
         <FriendsList
-            friendsClasses={friendsClasses}
-            filteredFriends={filteredFriends}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
+          friendsClasses={friendsClasses}
+          filteredFriends={filteredFriends}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
         />
       </div>
       <Footer />

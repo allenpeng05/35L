@@ -15,17 +15,14 @@ const Navbar = () => {
           <p className="px-3 m-2">BruinClassPals</p>
         </Link>
         <div className="flex gap-4">
-          <Link href="/" className="hover:text-gray-300">
-            Home
-          </Link>
           <Link href="/profile" className="hover:text-gray-300">
             Edit Profile
           </Link>
           <Link href="/login" className="hover:text-gray-300">
             Login
           </Link>
-          <Link href="/register" className="hover:text-gray-300">
-            Register
+          <Link href="/social" className="hover:text-gray-300">
+            Social
           </Link>
         </div>
       </div>
