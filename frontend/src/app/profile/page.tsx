@@ -13,13 +13,7 @@ interface User {
   email?: string;
   major?: string;
   bio?: string;
-
-  // If your old UI or UserCard expects additional fields such as:
-  // profilePicture?: string;
-  // grade?: string;
-  // contactInfo?: string;
-  // etc.
-  // Just add them here
+  year?: string;        // <-- Added to match the old EditProfile's "year" field
 }
 
 // ------------------- UTILS: DECODE JWT -------------------
@@ -137,7 +131,7 @@ const ViewProfile: React.FC<ViewProfileProps> = ({ user, setEditMode }) => {
   );
 };
 
-// ------------------- EDIT PROFILE COMPONENT -------------------
+// ------------------- EDIT PROFILE COMPONENT (from old UI style) -------------------
 interface EditProfileProps {
   user: User;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
@@ -145,11 +139,11 @@ interface EditProfileProps {
 }
 
 const EditProfile: React.FC<EditProfileProps> = ({ user, setUser, setEditMode }) => {
-  const [formData, setFormData] = useState<User>({
-    name: user.name,
-    email: user.email,
-    major: user.major,
-    bio: user.bio,
+  // Initialize form data from the user object
+  const [formData, setFormData] = useState({
+    name: user.name || "",
+    year: user.year || "",
+    major: user.major || "",
   });
 
   // Helper function for getting token cookie
@@ -160,10 +154,9 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, setUser, setEditMode })
     return "";
   };
 
-  // Handle input
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  // Handle input changes
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   // Submit the edited data
@@ -201,45 +194,40 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, setUser, setEditMode })
 
   return (
     <div className="p-4 border shadow-md max-w-md w-full bg-white">
-      <h2 className="text-xl font-bold mb-4">Edit Profile</h2>
+      <h2 className="text-xl font-bold mb-4 text-black">Edit Profile</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Name */}
         <input
           type="text"
           name="name"
-          value={formData.name || ""}
+          value={formData.name}
           onChange={handleChange}
           placeholder="Enter your name"
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border rounded placeholder-blue-900 text-black"
         />
 
-        {/* Email (disabled if you do not want email to be editable) */}
-        <input
-          type="email"
-          name="email"
-          value={formData.email || ""}
-          disabled
+        {/* Year (freshman, sophomore, junior, senior) */}
+        <select
+          name="year"
+          value={formData.year}
           onChange={handleChange}
-          className="w-full p-2 border rounded bg-gray-100"
-        />
+          className="w-full p-2 border rounded text-blue-900"
+        >
+          <option value="">Select Year</option>
+          <option value="Freshman">Freshman</option>
+          <option value="Sophomore">Sophomore</option>
+          <option value="Junior">Junior</option>
+          <option value="Senior">Senior</option>
+        </select>
 
         {/* Major */}
         <input
           type="text"
           name="major"
-          value={formData.major || ""}
+          value={formData.major}
           onChange={handleChange}
           placeholder="Enter your major"
-          className="w-full p-2 border rounded"
-        />
-
-        {/* Bio */}
-        <textarea
-          name="bio"
-          value={formData.bio || ""}
-          onChange={handleChange}
-          placeholder="Tell us about yourself"
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border rounded placeholder-blue-900 text-black"
         />
 
         {/* Submit & Cancel */}
