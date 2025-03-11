@@ -87,7 +87,6 @@ const loginUser = async (req, res) => {
     const token = jwt.sign({ userId: user._id }, SECRET_KEY, {
       expiresIn: "1d",
     });
-
     return res.status(200).json({ message: "Login successful", token });
   } catch (error) {
     console.error(error);
@@ -165,10 +164,40 @@ const acceptFriendRequest = async (req, res) => {
   }
 };
 
+/**
+ * GET a single user by ID (new function)
+ **/
+const getUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log("Fetching user data for ID:", id);
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      console.log("Invalid ID format detected");
+      return res.status(400).json({ error: "Invalid user ID." });
+    }
+    
+    const user = await User.findById(id).select("-password");
+    
+    console.log("Database query result:", user ? "User found" : "User not found");
+    
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    console.log("Returning user data for ID:", id);
+    return res.status(200).json(user);
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    return res.status(500).json({ error: "Internal server error." });
+  }
+};
+
 module.exports = {
   registerUser,
-  updateUser,
   loginUser,
+  updateUser,
   sendFriendRequest,
   acceptFriendRequest,
+  getUser, // <-- make sure to export our new function
 };

@@ -19,7 +19,7 @@ export default function UserCard({ user }) {
 
       <p className="contactInfo">
         <Mail className="contactIcon" />
-        {user.contactInfo || "No contact info provided"}
+        {user.email || "No contact info provided"}
       </p>
 
       {/* Interested Courses */}
