@@ -14,7 +14,7 @@ export default function ClassCard({
       <span className="bg-blue-500 text-white text-sm font-semibold px-2 py-1 rounded">
         {classId}
       </span>
-      <h2 className="text-xl font-bold mt-2">{className}</h2>
+      <h2 className="text-xl font-bold mt-2 text-black font-roboto">{className}</h2>
       <p className="text-blue-600 font-medium mt-2 flex items-center">
         <User className="w-5 h-5 mr-2 text-blue-600" />
         Professor: {professor}

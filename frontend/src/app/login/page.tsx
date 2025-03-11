@@ -1,58 +1,45 @@
 "use client";
 import { useState } from "react";
-import Link from 'next/link';
+import Link from "next/link";
 import Navbar from "@/components/Navbar.jsx";
 import Footer from "@/components/Footer.jsx";
 
-const Register = () => {
+const Login = () => {
   const [email, setEmail] = useState("");
-  const [password1, setPassword1] = useState("");
-  const [password2, setPassword2] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Simple validation
-    if (!email || !password1) {
+    if (!email || !password) {
       setError("Email and password are required.");
       return;
     }
 
-    // Check that email ends in '.edu'
-    if (email.slice(-4) !== ".edu") {
-      setError("Email must end in '.edu'");
-      return;
-    }
-
-    // Check that passwords match
-    if (password1 !== password2) {
-      setError("Passwords do not match");
-      return;
-    }
-
     try {
-      const response = await fetch("http://localhost:3001/api/register", {
+      const response = await fetch("http://localhost:3001/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-          password: password1,
-          name: email.split("@")[0],
-          major: "",
-          bio: ""
-        }),
+        body: JSON.stringify({ email, password }),
       });
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.error || "Registration failed");
+        throw new Error(data.error || "Login failed");
       }
 
       const data = await response.json();
-      console.log("Registration success:", data);
+      console.log("Login success:", data);
       setError("");
 
+      // If using JWT, store the token (e.g., in localStorage)
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+      }
+
+      // Redirect to home or a protected page
       window.location.href = "/";
     } catch (err: any) {
       setError(err.message);
@@ -60,12 +47,12 @@ const Register = () => {
   };
 
   return (
-    <div className="flex flex-col max-h-screen h-screen">
+    <div className="flex flex-col h-screen max-h-screen">
       <Navbar />
       <div className="flex flex-1 items-center justify-center bg-blue-300">
         <div className="bg-white p-8 shadow-lg rounded-lg w-96">
           <h2 className="text-black text-2xl font-semibold text-center mb-4">
-            Register Account
+            Login
           </h2>
 
           {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
@@ -93,23 +80,9 @@ const Register = () => {
               <input
                 type="password"
                 className="text-black w-full p-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
-                value={password1}
-                onChange={(e) => setPassword1(e.target.value)}
-                placeholder="Enter a password"
-              />
-            </div>
-
-            {/* Confirm Password Field */}
-            <div>
-              <label className="block text-sm font-medium text-gray-600">
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                className="text-black w-full p-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
-                value={password2}
-                onChange={(e) => setPassword2(e.target.value)}
-                placeholder="Confirm password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
               />
             </div>
 
@@ -118,12 +91,14 @@ const Register = () => {
               type="submit"
               className="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition"
             >
-              Register
+              Login
             </button>
           </form>
-          <p className="text-blue-500 cursor-pointer hover:text-blue-700">
-            Already have an account? <Link href="/login">Go to login</Link>
-          </p>
+          <Link href="/register">
+            <p className="text-blue-500 cursor-pointer hover:text-blue-700">
+              Register Account
+            </p>
+          </Link>
         </div>
       </div>
       <Footer />
@@ -131,4 +106,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Login;

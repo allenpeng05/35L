@@ -1,91 +1,112 @@
 "use client";
-import { useState } from "react";
+
 import Link from "next/link";
+import { useState } from "react";
+import ClassCard from "@/components/ClassCard";
+import ClassList from "@/components/ClassList";
+import SearchBar from "@/components/SearchBar";
+import FriendsList from "@/components/FriendsList";
+import Navbar from "@/components/Navbar.jsx";
+import Footer from "@/components/Footer.jsx";
+import { Search } from "lucide-react";
+import { useRouter } from "next/navigation";
 
-const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+export default function Home() {
+  /* placeholder array, needs hooking */
+  const [classes, setClasses] = useState([
+    {
+      classId: "CS143",
+      className: "Database Systems",
+      professor: "Ryan Rosario",
+    },
+    {
+      classId: "CS35L",
+      className: "Software Construction",
+      professor: "Paul Eggert",
+    },
+    {
+      classId: "Math 115A",
+      className: "Linear Algebra",
+      professor: "Wern Yeong",
+    },
+  ]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  /* placeholder array, needs hooking */
+  const [friendsClasses, setFriendsClasses] = useState([
+    {
+      friendName: "Alex",
+      classes: [
+        {
+          classId: "CS118",
+          className: "Computer Network Fundamentals",
+          professor: "Lixia Zhang",
+        },
+        {
+          classId: "CS35L",
+          className: "Software Construction",
+          professor: "Paul Eggert",
+        },
+        {
+          classId: "MATH 151A",
+          className: "Applied Numerical Methods",
+          professor: "Deanna Needell",
+        },
+      ],
+    },
+    {
+      friendName: "Sam",
+      classes: [
+        {
+          classId: "CS180",
+          className: "Introduction to Algorithms",
+          professor: "Amit Sahai",
+        },
+        {
+          classId: "CS33",
+          className: "Computer Organization",
+          professor: "Miryung Kim",
+        },
+        {
+          classId: "MATH 170A",
+          className: "Probability Theory",
+          professor: "Wesley Perkins",
+        },
+      ],
+    },
+  ]);
 
-    if (!email || !password) {
-      setError("Email and password are required.");
-      return;
-    }
+  const [searchQuery, setSearchQuery] = useState("");
 
-    try {
-      const response = await fetch("http://localhost:3001/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+  /* for search bar, case insensitive right now */
+  const filteredFriends = friendsClasses
+    .map((friend) => ({
+      ...friend,
+      classes: friend.classes.filter(
+        (course) =>
+          friend.friendName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          course.className.toLowerCase().includes(searchQuery.toLowerCase())
+      ),
+    }))
+    .filter((friend) => friend.classes.length > 0);
 
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || "Login failed");
-      }
-
-      const data = await response.json();
-      console.log("Login success:", data);
-      setError("");
-
-      // If using JWT, store the token (e.g., in localStorage)
-      if (data.token) {
-        localStorage.setItem("token", data.token);
-      }
-
-      // Redirect to home or a protected page
-      window.location.href = "/home";
-    } catch (err: any) {
-      setError(err.message);
-    }
-  };
-
+  const router = useRouter();
+  let loggedIn = true;
+  if (!loggedIn) {
+    router.push('/login');
+  }
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 shadow-lg rounded-lg w-96">
-        <h2 className="text-black text-2xl font-semibold text-center mb-4">Login</h2>
-
-        {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-600">Email</label>
-            <input
-              type="email"
-              className="text-black w-full p-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-600">Password</label>
-            <input
-              type="password"
-              className="text-black w-full p-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition"
-          >
-            Login
-          </button>
-        </form>
-        <Link href="/register">
-          <p className="text-blue-500 cursor-pointer hover:text-blue-700">
-            Register Account
-          </p>
-        </Link>
+    <div className="flex flex-col h-screen max-h-screen">
+      <Navbar />
+      <div className="flex-1 flex w-full overflow-auto bg-blue-300">
+        <ClassList classes={classes} />
+        <FriendsList
+            friendsClasses={friendsClasses}
+            filteredFriends={filteredFriends}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+        />
       </div>
+      <Footer />
     </div>
   );
-};
-
-export default Login;
+}
