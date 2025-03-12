@@ -1,5 +1,6 @@
 import React from "react";
 import ClassCard from "@/components/ClassCard";
+import { useRouter } from "next/navigation";
 
 interface Class {
   classId: string;
@@ -12,6 +13,7 @@ interface ClassListProps {
 }
 
 export default function ClassList({ classes }: ClassListProps) {
+  const router = useRouter();
   return (
     <div className="w-1/2 h-full max-h-[95%] overflow-y-auto p-4 bg-gray-200 m-[1%] rounded-2xl">
       <h1 className="text-3xl text-center font-bold text-black font-roboto m-2">
@@ -25,10 +27,11 @@ export default function ClassList({ classes }: ClassListProps) {
               classId={course.classId}
               className={course.className}
               professor={course.professor}
+              removable={true}
             />
           ))}
         </ul>
-        <button className="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
+        <button className="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded" onClick={() => {router.push("/addclass")}}>
           Add / Remove Class
         </button>
       </div>
