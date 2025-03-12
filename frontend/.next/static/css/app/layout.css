@@ -584,17 +584,14 @@ video {
 .relative {
   position: relative;
 }
+.left-4 {
+  left: 1rem;
+}
 .right-3 {
   right: 0.75rem;
 }
 .top-2 {
   top: 0.5rem;
-}
-.bottom-0 {
-  bottom: 0px;
-}
-.left-4 {
-  left: 1rem;
 }
 .top-4 {
   top: 1rem;
@@ -959,11 +956,6 @@ body {
 .hover\:bg-green-600:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(22 163 74 / var(--tw-bg-opacity, 1));
-}
-
-.hover\:bg-gray-700:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(55 65 81 / var(--tw-bg-opacity, 1));
 }
 
 .hover\:text-blue-700:hover {
