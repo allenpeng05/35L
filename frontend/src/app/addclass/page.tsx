@@ -25,7 +25,12 @@ export default function AddClass() {
         const response = await fetch('http://localhost:3001/api/courses/');
         if (!response.ok) throw new Error("Failed to fetch courses");
         const data = await response.json();
-        setCourses(data);
+
+        const sortedCourses = data.sort((a: Course, b: Course) => 
+          parseInt(a.courseNumber, 10) - parseInt(b.courseNumber, 10)
+        );
+        setCourses(sortedCourses);
+
       } catch (error) {
         console.error('Error fetching courses:', error);
       }
