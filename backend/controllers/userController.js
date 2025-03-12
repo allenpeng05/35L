@@ -47,27 +47,7 @@ const registerUser = async (req, res) => {
     res.status(500).json({ error: "Registration failed" });
   }
 };
-  
 
-
-const updateUser = async (req, res) => {
-  try {
-    const { id } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(id))
-      return res.status(400).json({ error: "Invalid User ID." });
-
-    const updatedUser = await User.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
-
-    if (!updatedUser)
-      return res.status(404).json({ error: "User not found." });
-
-    res.status(200).json({ message: "User updated", updatedUser });
-  } catch (error) {
-    res.status(500).json({ error: "Update failed" });
-  }
-};
 
 const loginUser = async (req, res) => {
   try {
@@ -165,7 +145,7 @@ const acceptFriendRequest = async (req, res) => {
 };
 
 /**
- * GET a single user by ID (new function)
+ * GET a single user by ID
  **/
 const getUser = async (req, res) => {
   try {
@@ -177,7 +157,7 @@ const getUser = async (req, res) => {
       return res.status(400).json({ error: "Invalid user ID." });
     }
     
-    const user = await User.findById(id).select("-password");
+    const user = await User.findById(id).populate("coursesInterested").select("-password");
     
     console.log("Database query result:", user ? "User found" : "User not found");
     
@@ -193,11 +173,29 @@ const getUser = async (req, res) => {
   }
 };
 
+const updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    // Validate id
+    const updatedUser = await User.findByIdAndUpdate(id, req.body, {
+      new: true, // returns the updated document
+    });
+    if (!updatedUser) {
+      return res.status(404).json({ error: "User not found." });
+    }
+    return res.status(200).json({ message: "User updated", updatedUser });
+  } catch (error) {
+    return res.status(500).json({ error: "Update failed" });
+  }
+};
+
+
 module.exports = {
   registerUser,
   loginUser,
   updateUser,
   sendFriendRequest,
   acceptFriendRequest,
-  getUser, // <-- make sure to export our new function
+  getUser, 
+  updateUser
 };

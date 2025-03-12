@@ -1,83 +1,99 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import ClassCard from "@/components/ClassCard";
+import { useState, useEffect } from "react";
 import ClassList from "@/components/ClassList";
-import SearchBar from "@/components/SearchBar";
 import FriendsList from "@/components/FriendsList";
 import Navbar from "@/components/Navbar.jsx";
 import Footer from "@/components/Footer.jsx";
-import { Search } from "lucide-react";
-import { useRouter } from "next/navigation";
+import jwt from "jsonwebtoken";
+
+// Type Definitions
+interface Course {
+  _id: string;
+  courseNumber: string;
+  name: string;
+  professor: string;
+}
+
+interface ClassItem {
+  _id: string;
+  classId: string;
+  className: string;
+  professor: string;
+}
+
+interface Friend {
+  friendName: string;
+  classes: ClassItem[];
+}
 
 export default function Home() {
-  /* placeholder array, needs hooking */
-  const [classes, setClasses] = useState([
-    {
-      classId: "CS143",
-      className: "Database Systems",
-      professor: "Ryan Rosario",
-    },
-    {
-      classId: "CS35L",
-      className: "Software Construction",
-      professor: "Paul Eggert",
-    },
-    {
-      classId: "Math 115A",
-      className: "Linear Algebra",
-      professor: "Wern Yeong",
-    },
-  ]);
+  const [classes, setClasses] = useState<ClassItem[]>([]);
+  const [friendsClasses, setFriendsClasses] = useState<Friend[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
-  /* placeholder array, needs hooking */
-  const [friendsClasses, setFriendsClasses] = useState([
-    {
-      friendName: "Alex",
-      classes: [
-        {
-          classId: "CS118",
-          className: "Computer Network Fundamentals",
-          professor: "Lixia Zhang",
-        },
-        {
-          classId: "CS35L",
-          className: "Software Construction",
-          professor: "Paul Eggert",
-        },
-        {
-          classId: "MATH 151A",
-          className: "Applied Numerical Methods",
-          professor: "Deanna Needell",
-        },
-      ],
-    },
-    {
-      friendName: "Sam",
-      classes: [
-        {
-          classId: "CS180",
-          className: "Introduction to Algorithms",
-          professor: "Amit Sahai",
-        },
-        {
-          classId: "CS33",
-          className: "Computer Organization",
-          professor: "Miryung Kim",
-        },
-        {
-          classId: "MATH 170A",
-          className: "Probability Theory",
-          professor: "Wesley Perkins",
-        },
-      ],
-    },
-  ]);
+  // Callback to update state immediately after removal
+  const handleRemoveSuccess = (removedCourseId: string) => {
+    setClasses((prevClasses) =>
+      prevClasses.filter((course) => course._id !== removedCourseId)
+    );
+  };
 
-  const [searchQuery, setSearchQuery] = useState("");
+  // Helper: Extract userId from token cookie
+  const getUserIdFromToken = (): string | null => {
+    try {
+      const cookies = document.cookie.split(";");
+      const tokenCookie = cookies.find((cookie) =>
+        cookie.trim().startsWith("token=")
+      );
 
-  /* for search bar, case insensitive right now */
+      if (!tokenCookie) return null;
+
+      const token = tokenCookie.split("=")[1];
+      const decoded = jwt.decode(token) as { userId: string } | null;
+      return decoded?.userId || null;
+    } catch (error) {
+      console.error("Error parsing JWT token:", error);
+      return null;
+    }
+  };
+
+  // On mount, fetch the user document (with coursesInterested populated)
+  useEffect(() => {
+    const fetchUserWithCourses = async () => {
+      try {
+        const userId = getUserIdFromToken();
+        if (!userId) return;
+
+        const response = await fetch(`http://localhost:3001/api/users/${userId}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch user");
+        }
+
+        const userData: { coursesInterested?: Course[] } = await response.json();
+        console.log("Fetched user:", userData);
+
+        if (userData.coursesInterested) {
+          const mapped = userData.coursesInterested.map((course) => ({
+            _id: course._id,
+            classId: course.courseNumber,
+            className: course.name,
+            professor: course.professor,
+          }));
+
+          setClasses(mapped);
+          console.log("Fetched classes:", mapped);
+        }
+      } catch (error) {
+        console.error("Error fetching user/courses:", error);
+      }
+    };
+
+    fetchUserWithCourses();
+  }, []);
+
+  // Filter friends' classes based on search query
   const filteredFriends = friendsClasses
     .map((friend) => ({
       ...friend,
@@ -93,12 +109,12 @@ export default function Home() {
     <div className="flex flex-col h-screen max-h-screen">
       <Navbar />
       <div className="flex-1 flex w-full overflow-auto bg-blue-300">
-        <ClassList classes={classes} />
+        <ClassList classes={classes} onRemoveSuccess={handleRemoveSuccess} />
         <FriendsList
-            friendsClasses={friendsClasses}
-            filteredFriends={filteredFriends}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
+          friendsClasses={friendsClasses}
+          filteredFriends={filteredFriends}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
         />
       </div>
       <Footer />

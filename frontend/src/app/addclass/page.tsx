@@ -1,101 +1,112 @@
-"use client";
-import { useState } from "react";
-import Link from 'next/link';
-import Navbar from "@/components/Navbar.jsx";
-import Footer from "@/components/Footer.jsx";
+'use client';
 
-const Login = () => {
-  const [classID, setClassID] = useState("");
-  const [title, setTitle] = useState("");
-  const [prof, setProf] = useState("");
-  const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import jwt from "jsonwebtoken";
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
 
-    // Mock add class logic (replace with actual API call)
-    if (!classID || !title || !prof) {
-        setError("Please enter something in each field");
+interface Course {
+  _id: string;
+  name: string;
+  courseNumber: number;
+  department: string;
+  professor: string;
+}
+
+export default function AddClass() {
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [selectedCourse, setSelectedCourse] = useState<string>('');
+  const [userId, setUserId] = useState<string | null>(null); // Fetch the user ID dynamically
+  const router = useRouter();
+
+  useEffect(() => {
+    async function fetchCourses() {
+      try {
+        const response = await fetch('http://localhost:3001/api/courses/');
+        if (!response.ok) throw new Error("Failed to fetch courses");
+        const data = await response.json();
+        setCourses(data);
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+      }
     }
-    else if (confirm("Are you sure you added the correct course information?")) {
-        console.log("Adding class with:", { classID, title, prof });
-        setError("");
-        setProf("");
-        setTitle("");
-        setClassID("");
-        setSuccessMessage("Class Added!");
+
+    const getUserIdFromToken = (): string | null => {
+      try {
+        const cookies = document.cookie.split(";");
+        const tokenCookie = cookies.find((cookie) =>
+          cookie.trim().startsWith("token=")
+        );
+    
+        if (!tokenCookie) {
+          return null;
+        }
+    
+        const token = tokenCookie.split("=")[1];
+        const decoded = jwt.decode(token) as { userId: string } | null;
+        return decoded?.userId || null;
+      } catch (error) {
+        console.error("Error parsing JWT token:", error);
+        return null;
+      }
+    };
+
+    setUserId(getUserIdFromToken());
+    fetchCourses();
+  }, []);
+
+  console.log('Course selected:', selectedCourse);
+  console.log('User:', userId);
+
+  const handleAddClass = async () => {
+    if (!selectedCourse || !userId) {
+      alert("Please select a class and ensure you're logged in.");
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:3001/api/courses/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, courseId: selectedCourse }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert('Class added successfully!');
+        router.push('/');
+      } else {
+        alert(data.message || 'Failed to add class.');
+      }
+    } catch (error) {
+      console.error('Error adding class:', error);
+      alert('Error adding class. Please try again.');
     }
   };
 
   return (
-    <div className="flex flex-col h-screen max-h-screen">
-      <Navbar />
-      <div className="flex flex-1 items-center justify-center bg-blue-300">
-        <div className="bg-white p-8 shadow-lg rounded-lg w-96">
-          <h2 className="text-black text-2xl font-semibold text-center mb-4">Add Class</h2>
-
-          {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
-
-          {successMessage && <p className="text-green-500 text-sm mb-3">{successMessage}</p>}
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* ClassID Field */}
-            <div>
-              <label className="block text-sm font-medium text-gray-600">
-                Class
-              </label>
-              <input
-                type="classID"
-                className="text-black w-full p-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
-                value={classID}
-                onChange={(e) => setClassID(e.target.value)}
-                placeholder="Department + Number (ex: MATH 115A)"
-              />
-            </div>
-
-            {/* Title Field */}
-            <div>
-              <label className="block text-sm font-medium text-gray-600">
-                Title
-              </label>
-              <input
-                type="title"
-                className="text-black w-full p-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Class Title"
-              />
-            </div>
-
-            {/* Prof Field */}
-            <div>
-              <label className="block text-sm font-medium text-gray-600">
-                Professor
-              </label>
-              <input
-                type="prof"
-                className="text-black w-full p-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
-                value={prof}
-                onChange={(e) => setProf(e.target.value)}
-                placeholder="Professor"
-              />
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              className="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition"
-            >
-              Submit
-            </button>
-          </form>
-          <Link href="/"><p className="text-blue-500 cursor-pointer hover:text-blue-700">Back to homepage</p></Link>
-        </div>
+    <div className="w-1/2 h-full max-h-[95%] overflow-y-auto p-4 bg-gray-200 m-[1%] rounded-2xl">
+      <h1 className="text-3xl text-center font-bold text-black font-roboto m-2">Add a Class</h1>
+      <div className="mt-4 p-3 bg-gray-100 shadow-md rounded-lg text-black m-2">
+        <select
+          className="w-full p-2 border border-gray-300 rounded-lg"
+          value={selectedCourse}
+          onChange={(e) => setSelectedCourse(e.target.value)}
+        >
+          <option value="">Select a class</option>
+          {courses.map((course) => (
+            <option key={course._id} value={course._id}>
+              {course.department} {course.courseNumber} - {course.name} ({course.professor})
+            </option>
+          ))}
+        </select>
+        <button
+          className="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+          onClick={handleAddClass}
+        >
+          Add Class
+        </button>
       </div>
-      <Footer />
     </div>
   );
-};
-
-export default Login;
+}

@@ -1,22 +1,20 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Navbar from "@/components/Navbar";     // from old UI
-import Footer from "@/components/Footer";     // from old UI
-import UserCard from "@/components/UserCard"; // from old UI
+import Navbar from "@/components/Navbar";     
+import Footer from "@/components/Footer";    
+import UserCard from "@/components/UserCard"; 
 import jwt from "jsonwebtoken";
 
-// ------------------- USER INTERFACE -------------------
 interface User {
   _id?: string;
   name?: string;
   email?: string;
   major?: string;
   bio?: string;
-  year?: string;        // <-- Added to match the old EditProfile's "year" field
+  year?: string;     
 }
 
-// ------------------- UTILS: DECODE JWT -------------------
 const getUserIdFromToken = (): string | null => {
   try {
     const cookies = document.cookie.split(";");
@@ -37,7 +35,6 @@ const getUserIdFromToken = (): string | null => {
   }
 };
 
-// ------------------- MAIN COMPONENT -------------------
 const Profile: React.FC = () => {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
@@ -105,7 +102,6 @@ const Profile: React.FC = () => {
   );
 };
 
-// ------------------- VIEW PROFILE COMPONENT -------------------
 interface ViewProfileProps {
   user: User;
   setEditMode: (value: boolean) => void;
@@ -114,7 +110,6 @@ interface ViewProfileProps {
 const ViewProfile: React.FC<ViewProfileProps> = ({ user, setEditMode }) => {
   return (
     <div className="justify-center m-4">
-      {/* Old UI's UserCard, but passing data from the new "user" object */}
       <UserCard user={user} />
 
       <div className="max-w-md mx-auto p-4">
@@ -131,7 +126,6 @@ const ViewProfile: React.FC<ViewProfileProps> = ({ user, setEditMode }) => {
   );
 };
 
-// ------------------- EDIT PROFILE COMPONENT (from old UI style) -------------------
 interface EditProfileProps {
   user: User;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
@@ -144,6 +138,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, setUser, setEditMode })
     name: user.name || "",
     year: user.year || "",
     major: user.major || "",
+    bio: user.bio || "",        
   });
 
   // Helper function for getting token cookie
@@ -155,7 +150,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, setUser, setEditMode })
   };
 
   // Handle input changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -174,7 +169,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, setUser, setEditMode })
           "Content-Type": "application/json",
           Authorization: `Bearer ${getCookie("token")}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(formData), // includes { name, year, major, bio }
       });
 
       if (!res.ok) {
@@ -182,7 +177,6 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, setUser, setEditMode })
       }
 
       const data = await res.json();
-      // data should contain something like { message, updatedUser }
       setUser(data.updatedUser);
       setEditMode(false);
       alert("Profile updated successfully!");
@@ -196,6 +190,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, setUser, setEditMode })
     <div className="p-4 border shadow-md max-w-md w-full bg-white">
       <h2 className="text-xl font-bold mb-4 text-black">Edit Profile</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
+
         {/* Name */}
         <input
           type="text"
@@ -227,6 +222,15 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, setUser, setEditMode })
           value={formData.major}
           onChange={handleChange}
           placeholder="Enter your major"
+          className="w-full p-2 border rounded placeholder-blue-900 text-black"
+        />
+
+        {/* Bio */}
+        <textarea
+          name="bio"
+          value={formData.bio}
+          onChange={handleChange}
+          placeholder="Tell us about yourself..."
           className="w-full p-2 border rounded placeholder-blue-900 text-black"
         />
 

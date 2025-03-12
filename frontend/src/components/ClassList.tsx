@@ -1,7 +1,9 @@
 import React from "react";
 import ClassCard from "@/components/ClassCard";
+import { useRouter } from "next/navigation";
 
 interface Class {
+  _id: string;
   classId: string;
   className: string;
   professor: string;
@@ -9,9 +11,11 @@ interface Class {
 
 interface ClassListProps {
   classes: Class[];
+  onRemoveSuccess?: (removedCourseId: string) => void;
 }
 
-export default function ClassList({ classes }: ClassListProps) {
+export default function ClassList({ classes, onRemoveSuccess }: ClassListProps) {
+  const router = useRouter();
   return (
     <div className="w-1/2 h-full max-h-[95%] overflow-y-auto p-4 bg-gray-200 m-[1%] rounded-2xl">
       <h1 className="text-3xl text-center font-bold text-black font-roboto m-2">Your Classes</h1>
@@ -23,11 +27,17 @@ export default function ClassList({ classes }: ClassListProps) {
               classId={course.classId}
               className={course.className}
               professor={course.professor}
+              courseId={course._id}
+              removable={true}
+              onRemoveSuccess={onRemoveSuccess}
             />
           ))}
         </ul>
-        <button className="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
-          Add / Remove Class
+        <button 
+          className="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded" 
+          onClick={() => {router.push("/addclass")}}
+        >
+          Add Class
         </button>
       </div>
     </div>
