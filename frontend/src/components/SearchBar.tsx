@@ -17,7 +17,7 @@ export default function SearchBar({
         placeholder="Search"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        className="w-full p-2 pr-10 border rounded-md focus:outline-none"
+        className="w-full p-2 pr-10 border rounded-md focus:outline-none text-black"
       />
       <Search className="absolute right-3 top-2 w-5 text-gray-500" />
     </div>

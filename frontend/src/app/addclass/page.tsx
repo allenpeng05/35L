@@ -71,7 +71,13 @@ export default function AddClass() {
   };
 
   return (
-  <div className="flex justify-center items-center h-screen w-full">
+  <div className="flex justify-center items-center h-screen w-full bg-blue-300">
+    <button 
+          className="mt-4 bg-white hover:bg-blue-600 text-black font-semibold py-2 px-4 rounded absolute top-4 left-4"
+          onClick={() => {router.push("/")}}
+        >
+        &larr; Back Home
+    </button>
     <div className="w-1/2 h-full max-h-[95%] overflow-y-auto p-4 bg-gray-200 m-[1%] rounded-2xl">
       <h1 className="text-3xl text-center font-bold text-black font-roboto m-2">
         Add a Class
