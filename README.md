@@ -1,36 +1,22 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+# BruinClassPals
 
-First, run the development server:
+Welcome to **BruinClassPals**, a social class planning app. **BruinClassPals** is a **MERN stack** full stack web application that connects UCLA students with eachother when finding/planning classes they want to take. 
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+When using the application, you must first **sign in** or **register**. Then, you will be redirected to the home page, where you can **add/remove classes**, **view your current class plan**, and **view your friends class plans**. On the Profile page, you will be able to **edit your profile**. On the Social page, you can **add friends** and **see recommended friends** based on mutual classes. 
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Technologies
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+* JavaScript
+* Node.js
+* Tailwind CSS
+* React.js / Next.js
+* Express.js
+* MongoDB
+* TailwindCSS
 
-## Learn More
+## Authors
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+*BruinClassPals* was made as a project for **COM SCI 35L** taught by Professor Paul Eggert in Winter 2025. **Made by:** Joshua Lipman, Joshua Du, Rohan Agarwhal, Allen Peng, & Neil Johnson. 
