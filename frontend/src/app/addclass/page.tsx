@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import jwt from "jsonwebtoken";
-
+import { getUserIdFromToken } from "@/utils/auth"
 
 interface Course {
   _id: string;
@@ -35,26 +34,6 @@ export default function AddClass() {
         console.error('Error fetching courses:', error);
       }
     }
-
-    const getUserIdFromToken = (): string | null => {
-      try {
-        const cookies = document.cookie.split(";");
-        const tokenCookie = cookies.find((cookie) =>
-          cookie.trim().startsWith("token=")
-        );
-    
-        if (!tokenCookie) {
-          return null;
-        }
-    
-        const token = tokenCookie.split("=")[1];
-        const decoded = jwt.decode(token) as { userId: string } | null;
-        return decoded?.userId || null;
-      } catch (error) {
-        console.error("Error parsing JWT token:", error);
-        return null;
-      }
-    };
 
     setUserId(getUserIdFromToken());
     fetchCourses();

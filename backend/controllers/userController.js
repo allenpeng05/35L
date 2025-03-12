@@ -187,9 +187,7 @@ const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
     // Validate id
-    const updatedUser = await User.findByIdAndUpdate(id, req.body, {
-      new: true, // returns the updated document
-    });
+    const updatedUser = await User.findByIdAndUpdate(id, req.body, { new: true }).populate("coursesInterested");
     if (!updatedUser) {
       return res.status(404).json({ error: "User not found." });
     }

@@ -20,7 +20,7 @@ interface FriendsListProps {
 export default function FriendsList({ currentUserId }: FriendsListProps) {
   const [friends, setFriends] = useState<Friend[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-    
+
   useEffect(() => {
     if (!currentUserId) return;
     // Fetch the user document
@@ -43,19 +43,20 @@ export default function FriendsList({ currentUserId }: FriendsListProps) {
         }
       })
       .catch((err) => console.error("Error fetching friends:", err));
-
   }, [currentUserId]);
 
-  const filteredFriends = friends
+  // If there's a search query, filter; otherwise, just render all
+  const displayedFriends = friends
     .map((friend) => ({
       ...friend,
-      classes: friend.classes.filter(
+      friend: friend.classes.filter(
         (course) =>
           friend.friendName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          course.className.toLowerCase().includes(searchQuery.toLowerCase())
+          course.className.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          course.classId.toLowerCase().includes(searchQuery.toLowerCase())
       ),
     }))
-    .filter((friend) => friend.classes.length > 0);
+    .filter((friend) => friend.classes.length > 0 || searchQuery === "");
 
   return (
     <div className="w-1/2 h-full max-h-[95%] overflow-y-auto p-4 bg-gray-300 m-[1%] rounded-2xl">
@@ -66,51 +67,27 @@ export default function FriendsList({ currentUserId }: FriendsListProps) {
         <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       </div>
 
-      {searchQuery === "" ? (
-        friends.map((friend, friendIndex) => (
-          <div
-            key={friendIndex}
-            className="mt-6 p-3 bg-gray-100 shadow-md rounded-lg w-full"
-          >
-            <h2 className="text-2xl font-semibold text-center text-gray-700 font-roboto">
-              {friend.friendName}
-            </h2>
-            <ul className="list-none space-y-2">
-              {friend.classes.map((course, index) => (
-                <ClassCard
-                  key={index}
-                  classId={course.classId}
-                  className={course.className}
-                  professor={course.professor}
-                  removable={false}
-                />
-              ))}
-            </ul>
-          </div>
-        ))
-      ) : (
-        <div className="absolute bg-white shadow-lg rounded-lg w-full max-h-60 overflow-y-auto">
-          {filteredFriends.length > 0 ? (
-            filteredFriends.map((friend, friendIndex) => (
-              <div key={friendIndex} className="p-3 hover:bg-gray-100">
-                <h2 className="text-xl font-semibold text-gray-700">
-                  {friend.friendName}
-                </h2>
-                <ul className="list-none">
-                  {friend.classes.map((course, index) => (
-                    <li key={index} className="text-gray-600">
-                      <span className="font-bold">{course.classId}</span>:{" "}
-                      {course.className}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))
-          ) : (
-            <p className="p-3 text-gray-500">No results found</p>
-          )}
+      {displayedFriends.map((friend, friendIndex) => (
+        <div
+          key={friendIndex}
+          className="mt-6 p-3 bg-gray-100 shadow-md rounded-lg w-full"
+        >
+          <h2 className="text-2xl font-semibold text-center text-gray-700 font-roboto">
+            {friend.friendName}
+          </h2>
+          <ul className="list-none space-y-2">
+            {friend.classes.map((course, index) => (
+              <ClassCard
+                key={index}
+                classId={course.classId}
+                className={course.className}
+                professor={course.professor}
+                removable={false}
+              />
+            ))}
+          </ul>
         </div>
-      )}
+      ))}
     </div>
   );
 }
