@@ -23,7 +23,7 @@ export default function FriendsList({ currentUserId }: FriendsListProps) {
     
   useEffect(() => {
     if (!currentUserId) return;
-    // Fetch the user document, assuming it returns a 'friends' field that is populated.
+    // Fetch the user document
     fetch(`http://localhost:3001/api/users/${currentUserId}`)
       .then((res) => res.json())
       .then((data) => {
