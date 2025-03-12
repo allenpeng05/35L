@@ -3,6 +3,7 @@ import { Mail } from "lucide-react";
 import "../styles/UserCard.css"; 
 
 export default function UserCard({ user }) {
+  console.log("User is:",user)
   return (
     <li className="userCard">
       <img
@@ -29,7 +30,7 @@ export default function UserCard({ user }) {
           {user.coursesInterested.length > 0 ? (
             user.coursesInterested.map((course, index) => (
               <li key={index} className="courseBadge">
-                {course}
+                {course.name}
               </li>
             ))
           ) : (
