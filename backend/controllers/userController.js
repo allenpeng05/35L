@@ -157,8 +157,18 @@ const getUser = async (req, res) => {
       return res.status(400).json({ error: "Invalid user ID." });
     }
     
-    const user = await User.findById(id).populate("coursesInterested").select("-password");
-    
+    const user = await User.findById(id)
+  .populate({
+    path: "friends",
+    select: "name coursesInterested",
+    populate: {
+      path: "coursesInterested",
+      select: "courseNumber name professor" // fields from Course model
+    }
+  })
+  .populate("coursesInterested") // to populate the current user's coursesInterested 
+  .select("-password")
+
     console.log("Database query result:", user ? "User found" : "User not found");
     
     if (!user) {
@@ -189,6 +199,119 @@ const updateUser = async (req, res) => {
   }
 };
 
+const getRecommendedFriends = async (req, res) => {
+  try {
+    const { id } = req.params;
+    // Fetch current user with courses populated
+    const currentUser = await User.findById(id).populate("coursesInterested");
+    if (!currentUser) {
+      return res.status(404).json({ error: "User not found." });
+    }
+    // Create a set of the current user's course IDs for lookup
+    const currentUserCourses = new Set(
+      currentUser.coursesInterested.map((course) => course._id.toString())
+    );
+
+    const currentUserFriends = new Set(currentUser.friends.map((friend) => friend.toString()));
+    
+    // Find all other users and populate their courses
+    const otherUsers = await User.find({ _id: { $ne: id } }).populate("coursesInterested");
+
+    const recommendedFriends = [];
+    otherUsers.forEach((user) => {
+
+      if (currentUserFriends.has(user._id.toString())) {
+        return;
+      }
+
+      // Find common courses between currentUser and this user
+      const commonCourses = user.coursesInterested.filter((course) =>
+        currentUserCourses.has(course._id.toString())
+      );
+      if (commonCourses.length >= 2) {
+        // Map the common courses to details required by the frontend
+        const sharedCourses = commonCourses.map((course) => ({
+          classId: course.courseNumber, // using courseNumber as classId
+          className: course.name,
+          professor: course.professor,
+        }));
+        recommendedFriends.push({
+          _id: user._id, // include the user's unique id
+          friendName: user.name,
+          classes: sharedCourses,
+        });
+      }
+    });
+
+    return res.status(200).json({ recommendedFriends });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Failed to get recommended friends." });
+  }
+};
+
+// New function to get pending friend requests for a user
+const getFriendRequests = async (req, res) => {
+  try {
+    const { id } = req.params; // 'id' is the receiver's user id
+    
+    // Get current user with courses populated
+    const currentUser = await User.findById(id).populate("coursesInterested");
+    if (!currentUser) {
+      return res.status(404).json({ error: "User not found." });
+    }
+    
+    // Create a set of the current user's course IDs for lookup
+    const currentUserCourses = new Set(
+      currentUser.coursesInterested.map((course) => course._id.toString())
+    );
+    
+    // Find pending friend requests
+    const friendRequests = await FriendRequest.find({
+      receiver: id,
+      status: "pending",
+    }).populate({
+      path: "sender",
+      select: "name email coursesInterested",
+      populate: {
+        path: "coursesInterested"
+      }
+    });
+    
+    // Transform the response to include shared course information
+    const requestsWithCourseInfo = friendRequests.map(request => {
+      // Find common courses between receiver and sender
+      const commonCourses = request.sender.coursesInterested.filter((course) =>
+        currentUserCourses.has(course._id.toString())
+      );
+      
+      // Map the common courses to the required format
+      const sharedCourses = commonCourses.map((course) => ({
+        classId: course.courseNumber,
+        className: course.name,
+        professor: course.professor,
+      }));
+      
+      // Return the formatted request object
+      return {
+        _id: request._id,
+        sender: {
+          _id: request.sender._id,
+          name: request.sender.name,
+          email: request.sender.email
+        },
+        status: request.status,
+        createdAt: request.createdAt,
+        classes: sharedCourses
+      };
+    });
+    
+    return res.status(200).json({ friendRequests: requestsWithCourseInfo });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Failed to fetch friend requests." });
+  }
+};
 
 module.exports = {
   registerUser,
@@ -197,5 +320,7 @@ module.exports = {
   sendFriendRequest,
   acceptFriendRequest,
   getUser, 
-  updateUser
+  updateUser,
+  getRecommendedFriends,
+  getFriendRequests
 };

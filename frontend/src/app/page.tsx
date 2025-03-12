@@ -58,12 +58,12 @@ export default function Home() {
       return null;
     }
   };
-
+  const userId = getUserIdFromToken();
   // On mount, fetch the user document (with coursesInterested populated)
   useEffect(() => {
     const fetchUserWithCourses = async () => {
       try {
-        const userId = getUserIdFromToken();
+        
         if (!userId) return;
 
         const response = await fetch(`http://localhost:3001/api/users/${userId}`);
@@ -110,11 +110,7 @@ export default function Home() {
       <Navbar />
       <div className="flex-1 flex w-full overflow-auto bg-blue-300">
         <ClassList classes={classes} onRemoveSuccess={handleRemoveSuccess} />
-        <FriendsList
-          friendsClasses={friendsClasses}
-          filteredFriends={filteredFriends}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
+        <FriendsList currentUserId={userId}
         />
       </div>
       <Footer />

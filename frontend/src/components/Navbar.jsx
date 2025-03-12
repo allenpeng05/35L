@@ -52,7 +52,10 @@ const Navbar = () => {
                 Home
               </Link>
               <Link href="/profile" className="hover:text-gray-300">
-                Edit Profile
+                Profile
+              </Link>
+              <Link href="/social" className="hover:text-gray-300">
+                Social
               </Link>
             </>
           ) : (

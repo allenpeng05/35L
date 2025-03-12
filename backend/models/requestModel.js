@@ -8,3 +8,4 @@ const FriendRequestSchema = new mongoose.Schema({
 });
 
 const FriendRequest = mongoose.model("FriendRequest", FriendRequestSchema);
+module.exports = FriendRequest;

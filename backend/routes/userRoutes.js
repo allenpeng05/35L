@@ -7,7 +7,9 @@ const {
   updateUser,
   sendFriendRequest,
   acceptFriendRequest,
-  getUser
+  getUser,
+  getRecommendedFriends,
+  getFriendRequests
 } = require("../controllers/userController");
 const User = require("../models/userModel"); 
 
@@ -33,6 +35,9 @@ router.post("/users/friend-request/accept", acceptFriendRequest);
 
 router.get("/users/:id", getUser);
 router.put("/users/:id", updateUser);
+
+router.get("/users/:id/recommended-friends", getRecommendedFriends);
+router.get("/users/:id/friend-requests", getFriendRequests);
 
 // Upload profile picture
 router.post("/users/:id/upload-profile-pic", upload.single("profilePic"), async (req, res) => {
