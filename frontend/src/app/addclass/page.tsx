@@ -8,7 +8,7 @@ import jwt from "jsonwebtoken";
 interface Course {
   _id: string;
   name: string;
-  courseNumber: number;
+  courseNumber: string;
   department: string;
   professor: string;
 }
@@ -71,6 +71,8 @@ export default function AddClass() {
         body: JSON.stringify({ userId, courseId: selectedCourse }),
       });
 
+      console.log("Response:", response);
+
       const data = await response.json();
       if (response.ok) {
         alert('Class added successfully!');
@@ -97,11 +99,14 @@ export default function AddClass() {
           onChange={(e) => setSelectedCourse(e.target.value)}
         >
           <option value="">Select a class</option>
-          {courses.map((course) => (
+          {courses.map((course) => {
+          console.log('Course num:', course.courseNumber);
+          return (
             <option key={course._id} value={course._id}>
               {course.department} {course.courseNumber} - {course.name} ({course.professor})
             </option>
-          ))}
+          );
+        })}
         </select>
         <button
           className="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"

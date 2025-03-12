@@ -7,7 +7,7 @@ export default function UserCard({ user }) {
   return (
     <li className="userCard">
       <img
-        src={user.profilePicture || "https://via.placeholder.com/100"}
+        src={`http://localhost:3001${user.profilePic}`}
         alt={user.name}
         className="profilePicture"
       />

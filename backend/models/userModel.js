@@ -7,6 +7,7 @@ const UserSchema = new mongoose.Schema({
   major: { type: String },
   bio: { type: String, maxlength: 500 },
   year: { type: String },
+  profilePic: { type: String },
   friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   friendRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   coursesInterested: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
