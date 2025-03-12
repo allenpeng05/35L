@@ -5,7 +5,7 @@ const User = require("../models/userModel");
 const addCourse = async (req, res) => {
     try {
         const { userId, courseId } = req.body;
-        console.log("req.body:", req.body);
+        
 
         // Check if user exists
         const user = await User.findById(userId);
