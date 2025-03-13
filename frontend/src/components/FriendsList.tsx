@@ -6,10 +6,13 @@ interface Class {
   classId: string;
   className: string;
   professor: string;
+  removable: boolean;
 }
 
 interface Friend {
   friendName: string;
+  friendYear: string;
+  friendMajor: string;
   classes: Class[];
 }
 
@@ -21,29 +24,32 @@ export default function FriendsList({ currentUserId }: FriendsListProps) {
   const [friends, setFriends] = useState<Friend[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
 
-  useEffect(() => {
-    if (!currentUserId) return;
-    // Fetch the user document
-    fetch(`http://localhost:3001/api/users/${currentUserId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.friends) {
-          // Map each friend to our Friend type.
-          const mappedFriends: Friend[] = data.friends.map((friend: any) => ({
-            friendName: friend.name,
-            classes: friend.coursesInterested
-              ? friend.coursesInterested.map((course: any) => ({
-                  classId: course.courseNumber,
-                  className: course.name,
-                  professor: course.professor,
-                }))
-              : [],
-          }));
-          setFriends(mappedFriends);
-        }
-      })
-      .catch((err) => console.error("Error fetching friends:", err));
-  }, [currentUserId]);
+useEffect(() => {
+  if (!currentUserId) return;
+  fetch(`http://localhost:3001/api/users/${currentUserId}`)
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.friends) {
+        const mappedFriends: Friend[] = data.friends.map((friend: any) => ({
+          friendName: friend.name,
+          friendYear: friend.year,
+          friendMajor: friend.major,
+          classes: friend.coursesInterested
+            ? friend.coursesInterested.map((course: any) => ({
+                classId: course.courseNumber,
+                className: course.name,
+                professor: course.professor,
+                removable: false, // Ensure this field is explicitly set
+              }))
+            : [],
+        }));
+        setFriends(mappedFriends);
+      }
+    })
+    .catch((err) => console.error("Error fetching friends:", err));
+}, [currentUserId]);
+
+  console.log("mappedFriends", friends);
 
   // If there's a search query, filter; otherwise, just render all
   const displayedFriends = friends
@@ -72,9 +78,11 @@ export default function FriendsList({ currentUserId }: FriendsListProps) {
           key={friendIndex}
           className="mt-6 p-3 bg-gray-100 shadow-md rounded-lg w-full"
         >
-          <h2 className="text-2xl font-semibold text-center text-gray-700 font-roboto">
-            {friend.friendName}
-          </h2>
+        <h2 className="text-2xl font-semibold text-center text-gray-700 font-roboto">
+          {friend.friendName}
+          {friend.friendYear && ` | ${friend.friendYear}`}
+          {friend.friendMajor && ` | ${friend.friendMajor}`}
+        </h2>
           <ul className="list-none space-y-2">
             {friend.classes.map((course, index) => (
               <ClassCard
