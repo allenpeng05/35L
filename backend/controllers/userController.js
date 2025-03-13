@@ -160,7 +160,7 @@ const getUser = async (req, res) => {
     const user = await User.findById(id)
   .populate({
     path: "friends",
-    select: "name coursesInterested",
+    select: "name coursesInterested year major",
     populate: {
       path: "coursesInterested",
       select: "courseNumber name professor" // fields from Course model
