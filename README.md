@@ -19,13 +19,15 @@ When using the application, you must first **sign in** or **register**. Then, yo
 
 ## Running Locally
 Run the following commands to enter the frontend and the backend directories. 
+
 cd backend
 npm install
 
 cd frontend
 npm install
 
-After installing required dependencies, run the following commands in the frontend and backend directories respectively.
+After installing required dependencies, run the following commands in the frontend and backend directories respectively:
+
 npm run dev
 
 node app.js
