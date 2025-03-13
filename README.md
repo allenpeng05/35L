@@ -17,6 +17,24 @@ When using the application, you must first **sign in** or **register**. Then, yo
 * MongoDB
 * TailwindCSS
 
+## Running Locally
+Run the following commands to enter the frontend and the backend directories. 
+cd backend
+npm install
+
+cd frontend
+npm install
+
+After installing required dependencies, run the following commands in the frontend and backend directories respectively.
+npm run dev
+
+node app.js
+
+If any errors occur in regards to bcrypt, run:
+
+rm -rf node_modules package-lock.json && npm install
+npm install bcrypt --build-from-source
+
 ## Authors
 
 *BruinClassPals* was made as a project for **COM SCI 35L** taught by Professor Paul Eggert in Winter 2025. **Made by:** Joshua Lipman, Joshua Du, Rohan Agarwhal, Allen Peng, & Neil Johnson. 
