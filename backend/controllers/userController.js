@@ -96,17 +96,17 @@ const sendFriendRequest = async (req, res) => {
     const existingRequest = await FriendRequest.findOne({
       sender: senderId,
       receiver: receiverId,
-      status: "pending",
+      status: { $in: ["pending", "accepted"] },
     });
 
     const existingOppositeRequest = await FriendRequest.findOne({
       sender: receiverId,
       receiver: senderId,
-      status: "pending",
+      status: { $in: ["pending", "accepted"] },
     });
 
     if (existingRequest || existingOppositeRequest) {
-      return res.status(400).json({ message: "Friend request already sent." });
+      return res.status(400).json({ message: "Friend request already exists." });
     }
 
     const friendRequest = new FriendRequest({ sender: senderId, receiver: receiverId });

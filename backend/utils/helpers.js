@@ -23,26 +23,26 @@ const getTimestamp = () => new Date().toLocaleString('en-US', {
 const validateEmail = (email) => {
   return /^[a-zA-Z0-9._%+-]+@(g\.ucla\.edu|ucla\.edu)$/.test(email)
     ? null
-    : "❌ Invalid UCLA email.";
+    : "Invalid UCLA email.";
 };
 
 const validatePassword = (password) => {
   return /^(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/.test(password)
     ? null
-    : "❌ Password must be at least eight characters long and include at least one uppercase letter and special character.";
+    : "Password must be at least eight characters long and include at least one uppercase letter and special character.";
 };
 
 const validateUsername = (username) => {
-  if (username.length < 4) return "❌ Username must be at least 4 characters long.";
-  if (/[^a-zA-Z0-9_-]/.test(username)) return "❌ Username can only contain letters, numbers, underscores (_), and hyphens (-).";
-  if (/(_-)|(-_)/.test(username)) return "❌ Underscore (_) and hyphen (-) cannot be next to each other.";
+  if (username.length < 4) return "Username must be at least 4 characters long.";
+  if (/[^a-zA-Z0-9_-]/.test(username)) return "Username can only contain letters, numbers, underscores (_), and hyphens (-).";
+  if (/(_-)|(-_)/.test(username)) return "Underscore (_) and hyphen (-) cannot be next to each other.";
   return null;
 };
 
 const validateCourse = (courseCode, courseName, instructor, schedule) => {
-  if (!courseCode || courseCode.trim() === "") return "❌ Course code is required and cannot be empty or whitespace.";
-  if (!courseName || courseName.trim() === "") return "❌ Course name is required and cannot be empty or whitespace.";
-  if (!instructor || instructor.trim() === "") return "❌ Instructor name is required and cannot be empty or whitespace.";
+  if (!courseCode || courseCode.trim() === "") return "Course code is required";
+  if (!courseName || courseName.trim() === "") return "Course name";
+  if (!instructor || instructor.trim() === "") return "Instructor name";
 
   if (!schedule ||
     !Array.isArray(schedule.days) ||
@@ -50,16 +50,16 @@ const validateCourse = (courseCode, courseName, instructor, schedule) => {
     schedule.days.some(day => !day || day.trim() === "") ||
     !schedule.time || schedule.time.trim() === ""
   ) {
-    return "❌ Course schedule must include valid days and time, not empty or whitespace.";
+    return "Course schedule must include valid days and time";
   }
   return null;
 };
 
 const validatePost = async (userId) => {
-  if (!mongoose.Types.ObjectId.isValid(userId)) return "❌ Invalid User ID.";
+  if (!mongoose.Types.ObjectId.isValid(userId)) return "Invalid User ID.";
 
   const userExists = await User.findById(userId);
-  if (!userExists) return "❌ User ID does not exist.";
+  if (!userExists) return "User ID does not exist.";
 
   return null;
 };
