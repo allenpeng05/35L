@@ -192,7 +192,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, setUser, setEditMode })
       <h2 className="text-xl font-bold mb-4 text-black">Edit Profile</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         
-        <input type="text" name="name" value={formData.name} onChange={handleChange} className="w-full p-2 border rounded text-black" />
+        <input type="text" placeholder="Enter name here" name="name" value={formData.name} onChange={handleChange} className="w-full p-2 border rounded text-black" />
         <select name="year" value={formData.year} onChange={handleChange} className="w-full p-2 border rounded text-black">
           <option value="">Select Year</option>
           <option value="Freshman">Freshman</option>
@@ -200,8 +200,8 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, setUser, setEditMode })
           <option value="Junior">Junior</option>
           <option value="Senior">Senior</option>
         </select>
-        <input type="text" name="major" value={formData.major} onChange={handleChange} className="w-full p-2 border rounded text-black" />
-        <textarea name="bio" value={formData.bio} onChange={handleChange} className="w-full p-2 border rounded text-black" />
+        <input type="text" placeholder="Enter major here" name="major" value={formData.major} onChange={handleChange} className="w-full p-2 border rounded text-black" />
+        <textarea name="bio" placeholder="Enter bio here" value={formData.bio} onChange={handleChange} className="w-full p-2 border rounded text-black" />
 
         {/* Profile Picture Upload */}
         <input type="file" accept="image/*" onChange={handleImageChange} className="w-full p-2 border rounded text-black" />
