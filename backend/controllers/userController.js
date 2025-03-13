@@ -99,7 +99,13 @@ const sendFriendRequest = async (req, res) => {
       status: "pending",
     });
 
-    if (existingRequest) {
+    const existingOppositeRequest = await FriendRequest.findOne({
+      sender: receiverId,
+      receiver: senderId,
+      status: "pending",
+    });
+
+    if (existingRequest || existingOppositeRequest) {
       return res.status(400).json({ message: "Friend request already sent." });
     }
 
@@ -311,6 +317,69 @@ const getFriendRequests = async (req, res) => {
   }
 };
 
+// Function to get outbound friend requests sent by a user
+const getFriendRequestsOutbound = async (req, res) => {
+  try {
+    const { id } = req.params; // 'id' is the sender's user id
+    
+    // Get current user with courses populated
+    const currentUser = await User.findById(id).populate("coursesInterested");
+    if (!currentUser) {
+      return res.status(404).json({ error: "User not found." });
+    }
+    
+    // Create a set of the current user's course IDs for lookup
+    const currentUserCourses = new Set(
+      currentUser.coursesInterested.map((course) => course._id.toString())
+    );
+    
+    // Find outbound friend requests
+    const outboundRequests = await FriendRequest.find({
+      sender: id,
+      status: "pending",
+    }).populate({
+      path: "receiver",
+      select: "name email coursesInterested",
+      populate: {
+        path: "coursesInterested"
+      }
+    });
+    
+    // Transform the response to include shared course information
+    const formattedRequests = outboundRequests.map(request => {
+      // Find common courses between sender and receiver
+      const commonCourses = request.receiver.coursesInterested.filter((course) =>
+        currentUserCourses.has(course._id.toString())
+      );
+      
+      // Map the common courses to the required format
+      const sharedCourses = commonCourses.map((course) => ({
+        classId: course.courseNumber,
+        className: course.name,
+        professor: course.professor,
+      }));
+      
+      // Return the formatted request object
+      return {
+        _id: request._id,
+        receiver: {
+          _id: request.receiver._id,
+          name: request.receiver.name,
+          email: request.receiver.email
+        },
+        status: request.status,
+        createdAt: request.createdAt,
+        classes: sharedCourses
+      };
+    });
+    
+    return res.status(200).json({ outboundRequests: formattedRequests });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Failed to fetch outbound friend requests." });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -320,5 +389,6 @@ module.exports = {
   getUser, 
   updateUser,
   getRecommendedFriends,
-  getFriendRequests
+  getFriendRequests,
+  getFriendRequestsOutbound
 };
