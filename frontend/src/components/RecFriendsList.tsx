@@ -44,13 +44,11 @@ export default function RecFriendsList({
   return (
     <div className="w-1/2 h-full max-h-[95%] overflow-y-auto p-4 bg-gray-200 m-[1%] rounded-2xl">
       <div className="m-2">
-        <h1 className="text-3xl font-bold text-black font-roboto mb-2">
-          Recommended Friends
-        </h1>
+        <h1 className="text-3xl font-bold text-black font-roboto mb-2 text-center">Recommended Friends</h1>
         <input
           type="text"
           placeholder="Search for friends..."
-          className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+          className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black mt-5"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />

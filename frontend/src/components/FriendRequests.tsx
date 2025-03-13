@@ -51,7 +51,7 @@ export default function FriendRequestsList({ currentUserId }: FriendRequestsList
   return (
     <div className="w-1/2 h-full max-h-[95%] overflow-y-auto p-4 bg-gray-200 m-[1%] rounded-2xl">
       <div className="m-2">
-        <h1 className="text-3xl font-bold text-black font-roboto mb-2">Friend Requests</h1>
+        <h1 className="text-3xl font-bold text-black font-roboto mb-2 text-center">Friend Requests</h1>
       </div>
 
       <div className="mt-4 p-3 bg-gray-100 shadow-md rounded-lg text-black m-2">
