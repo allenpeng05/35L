@@ -1,34 +1,12 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import jwt from "jsonwebtoken";
+import { getUserIdFromToken } from "@/utils/auth";
 import {useRouter} from "next/navigation"
 
 const Navbar = () => {
   const [userId, setUserId] = useState(null);
-  const router = useRouter();
-
-  const getUserIdFromToken = () => {
-    try {
-      const cookies = document.cookie.split(";");
-      const tokenCookie = cookies.find((cookie) =>
-        cookie.trim().startsWith("token=")
-      );
-  
-      if (!tokenCookie) {
-        return null;
-      }
-  
-      const token = tokenCookie.split("=")[1];
-      const decoded = jwt.decode(token);
-      return decoded && decoded.userId ? decoded.userId : null;
-    } catch (error) {
-      console.error("Error parsing JWT token:", error);
-      return null;
-    }
-  };
-  
-  
+  const router = useRouter();  
 
   // Check for token once on mount
   useEffect(() => {
