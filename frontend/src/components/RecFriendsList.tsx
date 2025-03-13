@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface RecFriendsListProps {
   recommendedFriends: {
@@ -9,12 +9,54 @@ interface RecFriendsListProps {
   currentUserId: string;
 }
 
+interface OutboundRequest {
+  _id: string;
+  receiver: {
+    _id: string;
+    name: string;
+    email: string;
+  };
+  status: string;
+  createdAt: string;
+  classes: { classId: string; className: string; professor: string }[];
+}
+
 export default function RecFriendsList({
   recommendedFriends,
   currentUserId,
 }: RecFriendsListProps) {
   const [requestedFriends, setRequestedFriends] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch outbound friend requests when component mounts
+  useEffect(() => {
+    const fetchOutboundRequests = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch(`http://localhost:3001/api/users/${currentUserId}/friend-requests-outbound`);
+        const data = await response.json();
+        
+        if (response.ok) {
+          // Create a set of receiver IDs from outbound requests
+          const requestedIds = new Set(
+            data.outboundRequests.map((request: OutboundRequest) => request.receiver._id)
+          );
+          setRequestedFriends(requestedIds);
+        } else {
+          console.error("Error fetching outbound requests:", data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching outbound requests:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (currentUserId) {
+      fetchOutboundRequests();
+    }
+  }, [currentUserId]);
 
   const handleAddFriend = async (friendId: string) => {
     try {
@@ -25,7 +67,7 @@ export default function RecFriendsList({
       });
       const data = await response.json();
       if (response.ok) {
-        setRequestedFriends((prev) => new Set(prev).add(friendId));
+        setRequestedFriends((prev) => new Set([...prev, friendId]));
       } else {
         console.error("Error sending friend request:", data.message);
       }
@@ -41,14 +83,26 @@ export default function RecFriendsList({
       .includes(searchQuery.toLowerCase())
   );
 
+  if (isLoading) {
+    return (
+      <div className="w-1/2 h-full max-h-[95%] overflow-y-auto p-4 bg-gray-200 m-[1%] rounded-2xl">
+        <div className="flex justify-center items-center h-40">
+          <p className="text-gray-600">Loading recommended friends...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-1/2 h-full max-h-[95%] overflow-y-auto p-4 bg-gray-200 m-[1%] rounded-2xl">
       <div className="m-2">
-        <h1 className="text-3xl font-bold text-black font-roboto mb-2 text-center">Recommended Friends</h1>
+        <h1 className="text-3xl font-bold text-black font-roboto mb-2">
+          Recommended Friends
+        </h1>
         <input
           type="text"
           placeholder="Search for friends..."
-          className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black mt-5"
+          className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
