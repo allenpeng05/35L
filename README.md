@@ -20,6 +20,7 @@ When using the application, you must first **sign in** or **register**. Then, yo
 ## Running Locally
 Run the following commands to start our app.
 
+```
 npm install
 
 cd frontend
@@ -28,8 +29,10 @@ npm run dev
 cd ../backend
 npm install bcrypt
 node app.js
+```
 
 The app should be running on port 3000, assuming no other processes are currently bound to that port.
+
 
 If any errors occur in regards to bcrypt, run:
 
