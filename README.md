@@ -17,6 +17,41 @@ When using the application, you must first **sign in** or **register**. Then, yo
 * MongoDB
 * TailwindCSS
 
+## Running Locally
+Run the following commands to start our app.
+
+If you don't want to be vulnerable to users hacking into your account, add the following in backend/.env 
+
+```
+JWT_SECRET="randomlongstring"
+```
+
+For saftey purposes, ensure your string is truly long and random
+
+```
+
+
+npm install
+
+cd frontend
+npm run dev
+
+cd ../backend
+npm install bcrypt
+node app.js
+```
+
+The app should be running on port 3000, assuming no other processes are currently bound to that port.
+
+
+If any errors occur in regards to bcrypt, run:
+
+```
+rm -rf node_modules package-lock.json
+
+npm install bcrypt --build-from-source
+```
+
 ## Authors
 
 *BruinClassPals* was made as a project for **COM SCI 35L** taught by Professor Paul Eggert in Winter 2025. **Made by:** Joshua Lipman, Joshua Du, Rohan Agarwhal, Allen Peng, & Neil Johnson. 
