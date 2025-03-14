@@ -36,8 +36,11 @@ The app should be running on port 3000, assuming no other processes are currentl
 
 If any errors occur in regards to bcrypt, run:
 
-rm -rf node_modules package-lock.json && npm install
+```
+rm -rf node_modules package-lock.json
+
 npm install bcrypt --build-from-source
+```
 
 ## Authors
 
