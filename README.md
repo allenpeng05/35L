@@ -20,7 +20,17 @@ When using the application, you must first **sign in** or **register**. Then, yo
 ## Running Locally
 Run the following commands to start our app.
 
+If you don't want to be vulnerable to users hacking into your account, add the following in backend/.env 
+
 ```
+JWT_SECRET="randomlongstring"
+```
+
+For saftey purposes, ensure your string is truly long and random
+
+```
+
+
 npm install
 
 cd frontend
