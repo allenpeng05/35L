@@ -18,19 +18,18 @@ When using the application, you must first **sign in** or **register**. Then, yo
 * TailwindCSS
 
 ## Running Locally
-Run the following commands to enter the frontend and the backend directories. 
+Run the following commands to start our app.
 
-cd backend
 npm install
 
 cd frontend
-npm install
-
-After installing required dependencies, run the following commands in the frontend and backend directories respectively:
-
 npm run dev
 
+cd ../backend
+npm install bcrypt
 node app.js
+
+The app should be running on port 3000, assuming no other processes are currently bound to that port.
 
 If any errors occur in regards to bcrypt, run:
 
