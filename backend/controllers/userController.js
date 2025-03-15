@@ -8,6 +8,7 @@ const {
 } = require("../utils/helpers");
 const bcrypt = require("bcrypt");
 require('dotenv').config();
+const jwt = require("jsonwebtoken");
 
 const SECRET_KEY = process.env.JWT_SECRET || "dev_secret";
 
